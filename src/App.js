@@ -1,28 +1,35 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { connect } from 'react-redux';
+import { fetchPosts } from './Actions/Index';
 
 class App extends Component {
+  componentDidMount(){
+    this.props.dispatch(fetchPosts('reactjs'));
+  }
   render() {
+    const { gifs, updating } = this.props;
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+          { updating === true &&
+            <div>
+              Loading...
+            </div>
+          }
+          { gifs.map((gif, i) => 
+            <a className='item' href={gif.url} key={`gid-${i}`}>
+              {gif.title}
+            </a>
+          )}
       </div>
     );
   }
 }
 
-export default App;
+function mapStateToProps(state) {
+  return {
+    gifs: state.gifs,
+    updating: state.updating
+  };
+}
+
+export default connect(mapStateToProps)(App);
